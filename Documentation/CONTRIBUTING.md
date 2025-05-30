@@ -28,15 +28,15 @@ The board definition should look as follows:
       const int pin_led_rx = 9;
       const int pin_led_tx = 8;
       const uint8_t interfaces[INTERFACE_COUNT] = {SX127X};
-      const bool interface_cfg[INTERFACE_COUNT][3] = { 
+      const bool interface_cfg[INTERFACE_COUNT][3] = {
                     // SX127X
           {
               true, // DEFAULT_SPI
               false, // HAS_TCXO
               false  // DIO2_AS_RF_SWITCH
-          }, 
+          },
       };
-      const int8_t interface_pins[INTERFACE_COUNT][10] = { 
+      const int8_t interface_pins[INTERFACE_COUNT][10] = {
                   // SX127X
           {
               7, // pin_ss
@@ -85,7 +85,7 @@ An example of an entry using the SX1262 modem can be seen below:
   const int pin_led_tx = 6;
   #define INTERFACE_COUNT 1
   const uint8_t interfaces[INTERFACE_COUNT] = {SX126X};
-  const bool interface_cfg[INTERFACE_COUNT][3] = { 
+  const bool interface_cfg[INTERFACE_COUNT][3] = {
                 // SX1262
       {
           false, // DEFAULT_SPI
@@ -93,7 +93,7 @@ An example of an entry using the SX1262 modem can be seen below:
           true  // DIO2_AS_RF_SWITCH
       }
   };
-  const int8_t interface_pins[INTERFACE_COUNT][10] = { 
+  const int8_t interface_pins[INTERFACE_COUNT][10] = {
               // SX1262
       {
           42, // pin_ss
@@ -126,15 +126,15 @@ An example of an entry using the SX1280 modem can be seen below:
   const int pin_led_tx = 6;
   #define INTERFACE_COUNT 1
   const uint8_t interfaces[INTERFACE_COUNT] = {SX128X};
-  const bool interface_cfg[INTERFACE_COUNT][3] = { 
+  const bool interface_cfg[INTERFACE_COUNT][3] = {
                 // SX1280
       {
           true, // DEFAULT_SPI
           false,// HAS_TCXO
           false // DIO2_AS_RF_SWITCH
-      } 
+      }
   };
-  const int8_t interface_pins[INTERFACE_COUNT][10] = { 
+  const int8_t interface_pins[INTERFACE_COUNT][10] = {
               // SX1280
       {
           24, // pin_ss
@@ -147,7 +147,7 @@ An example of an entry using the SX1280 modem can be seen below:
           20, // pin_txen
           19, // pin_rxen
           -1  // pin_tcxo_enable
-      } 
+      }
   };
 ```
 
@@ -158,9 +158,9 @@ If you are using non-default SPI pins on an nRF52 MCU variant, you **must** ensu
       const SPIClass interface_spi[1] = {
             // SX1262
             SPIClass(
-                NRF_SPIM2, 
-                interface_pins[0][3], 
-                interface_pins[0][1], 
+                NRF_SPIM2,
+                interface_pins[0][3],
+                interface_pins[0][1],
                 interface_pins[0][2]
                )
       };
@@ -180,6 +180,19 @@ Note: this will again have to be pasted in the correct section according to
 your MCU variant. Please search for the other definitions of `led_rx_on()` to
 find the correct section, then find the final section by searching for the
 comparison where `MCU_VARIANT` is checked for your MCU variant.
+
+The product ID needs to be added to the validation functions `eeprom_product_valid()`, under the correct platform:
+```
+#if PLATFORM == PLATFORM_ESP32
+if (rval == PRODUCT_RNODE || ... || rval == BOARD_MY_WICKED_BOARD
+```
+
+The same must be done for the models under `eeprom_model_valid()`.
+Make sure you add all the model variants you want to support as defined at the top of `Boards.h`.
+```
+#elif BOARD_MODEL == BOARD_MY_WICKED_BOARD
+if (model == MODEL_FE || model == MODEL_FF) {
+```
 
 ### Makefile
 You can add the example target below to the makefile for your board, but **you must replace the FQBN** in the arduino-cli command with the correct one for your board.
@@ -238,4 +251,4 @@ Please submit this, and any other support in different areas of the project your
 Feature requests are welcomed, given that those requesting it are happy to write it themselves, or a contributor considers it to be important enough to them to write it themselves. They must be written and **properly** tested before being proposed as a pull request for the project on [GitHub](https://github.com/liberatedsystems/RNode_Firmware_CE). **Manufacturers are encouraged to contribute support for their products back to this repository**, and such support will be received gladly, given it does not effect support for other products or boards.
 
 # Caveat
-All contributions must not be written using **any** LLM (ChatGPT, etc.), please handwrite them **only**. Any PRs with proposed contributions which have been discovered to be written using an LLM will **NOT** be merged. The contributor concerned may rewrite their entire pull request **by hand** and it may be reconsidered for merging in the future. 
+All contributions must not be written using **any** LLM (ChatGPT, etc.), please handwrite them **only**. Any PRs with proposed contributions which have been discovered to be written using an LLM will **NOT** be merged. The contributor concerned may rewrite their entire pull request **by hand** and it may be reconsidered for merging in the future.
