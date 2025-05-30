@@ -73,7 +73,7 @@ console-site:
 
 spiffs: console-site spiffs-image
 
-spiffs-image: venv
+spiffs-image:
 	$(PYTHON) Release/esptool/spiffsgen.py 1966080 ./Console/build Release/console_image.bin
 
 upload-spiffs:
